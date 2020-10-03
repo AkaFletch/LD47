@@ -2,6 +2,8 @@
 #define LD47_H
 #include "SDL2/SDL.h"
 
+#include "opengl.h"
+
 typedef enum LevelType {
     LevelType_None = 0,
     LevelType_Play,
@@ -30,8 +32,11 @@ typedef struct Controller {
 
 typedef struct GameState {
     int initialised;
+
+    int width, height;
     SDL_Window *window;
-    SDL_Renderer *renderer;
+
+    SDL_GLContext *glContext;
     Controller *controller;
     LevelState *state;
     int quit;
