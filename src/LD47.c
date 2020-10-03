@@ -1,11 +1,9 @@
 #include "LD47.h"
 
 void handleKeyboard(Controller *controller, SDL_Event event) {
-    printf("Keypressed\n");
     switch(event.key.keysym.sym) {
         case SDLK_SPACE: {
             controller->Accept.pressed = 1;
-            printf("space\n");
         }
     }
 }
@@ -36,19 +34,11 @@ void updateGame(GameState *state) {
 }
 
 void render(GameState *state) {
-    SDL_RenderClear(state->renderer); 
-    SDL_Rect rect = {0,0, 1920, 1080};
-    SDL_Rect rect2 = {100,100, 1920, 1080};
-    SDL_SetRenderDrawColor(state->renderer, 255, 155, 255, 0);
-    SDL_RenderFillRect(state->renderer, &rect); 
-    SDL_SetRenderDrawColor(state->renderer, 255, 0, 0, 0);
-    SDL_RenderFillRect(state->renderer, &rect2); 
-    SDL_RenderPresent(state->renderer); 
     return;
 }
 
 void freeGameState(GameState *state) {
-    SDL_DestroyRenderer(state->renderer);
+    SDL_GL_DeleteContext(state->glContext);
     SDL_DestroyWindow(state->window);
 }
 

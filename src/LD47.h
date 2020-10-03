@@ -31,7 +31,7 @@ typedef struct Controller {
 typedef struct GameState {
     int initialised;
     SDL_Window *window;
-    SDL_Renderer *renderer;
+    SDL_GLContext *glContext;
     Controller *controller;
     LevelState *state;
     int quit;
