@@ -109,3 +109,19 @@ void drawCircle(vec3 pos, float radius, vec3 c, int subDivs) {
     glEnd();
 }
 
+vec3 rotateVec3xy(vec3 rotate, float angle) {
+    vec3 result = {};
+    float cosRes = cosf(angle);
+    float sinRes = sinf(angle);
+    mat2 rotationMatrix = {
+        cosRes, -sinRes,
+        sinRes, cosRes
+    };
+    float x = rotate.points[0];
+    float y = rotate.points[1];
+    result.points[0] = x * rotationMatrix.points[0] + y * rotationMatrix.points[1];
+    result.points[1] = x * rotationMatrix.points[2] + y * rotationMatrix.points[3];
+    result.points[2] = rotate.points[2];
+    return result;
+}
+
