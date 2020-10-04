@@ -1,9 +1,19 @@
 #include "LD47.h"
+#include "PlayState.h"
 
 void handleKeyboard(Controller *controller, SDL_Event event) {
+    int keypressed = event.key.type == SDL_KEYDOWN;
     switch(event.key.keysym.sym) {
         case SDLK_SPACE: {
-            controller->Accept.pressed = 1;
+            controller->Accept.pressed = keypressed;
+            break;
+        }
+        case SDLK_a: {
+            controller->Left.pressed = keypressed;
+            break;
+        }
+        case SDLK_d: {
+            controller->Right.pressed = keypressed;
             break;
         }
     }
@@ -23,7 +33,10 @@ void handleInput(GameState *state, Controller  *controller) {
                 handleKeyboard(controller, event);
                 break;
             }
-
+            case SDL_KEYUP: {
+                handleKeyboard(controller, event);
+                break;
+            }
             case SDL_WINDOWEVENT: {
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                     state->width  = (int) event.window.data1;
@@ -35,17 +48,28 @@ void handleInput(GameState *state, Controller  *controller) {
     }
 }
 
-void updateGame(GameState *state) {
+void updateGame(GameState *state, float delta) {
     handleInput(state, state->controller);
-    if(state->controller->Exit.pressed)
+    if(state->controller->Exit.pressed) {
         state->quit = 1;
-
+    }
+    switch(state->state->type) {
+        case LevelType_Play: {
+            UpdatePlayState(&state->state->play, state->controller, delta);
+            break;
+        }
+        case LevelType_None: {
+            printf("Level type set to none?");
+            state->quit = 1;
+            return;
+        }
+    }
     return;
 }
 
 void render(GameState *state) {
     glViewport(0, 0, state->width, state->height);
-    glClearColor(1, 0, 0, 1);
+    glClearColor(100.0/255, 149.0/255, 237.0/255, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
@@ -53,33 +77,36 @@ void render(GameState *state) {
 
     glMatrixMode(GL_MODELVIEW);
 
-    vec3 camPos = { 0, 0, 5 };
-    camera(camPos);
-
-    vec3 v0 = {  0.5,  -2.5,  0 };
-    vec3 v1 = { -2.25,  0.25, 0 };
-    vec3 v2 = {  0.25,  0.25, 0 };
-    vec3 c  = { 0, 1, 0 };
-
-    vec3 c2 = { 0, 0, 1 };
-    drawTriangle(v0, v1, v2, c2);
-
-    vec3 pos = { 0, 0, 0 };
-
-    drawCircle(pos, 3, c, 30);
+    switch(state->state->type) {
+        case LevelType_Play: {
+            RenderPlayState(&state->state->play);
+            break;
+        }
+        case LevelType_None: {
+            printf("Level type set to none?");
+            state->quit = 1;
+            return;
+        }
+    }
 
     return;
 }
 
 void freeGameState(GameState *state) {
+    free(state->controller);
+    free(state->state);
     SDL_GL_DeleteContext(state->glContext);
     SDL_DestroyWindow(state->window);
 }
 
 void gameStateInit(GameState *state) {
     state->initialised = 1;
-    state->state      = malloc(sizeof(PlayState));
+    state->state = malloc(sizeof(LevelState));
+    memset(state->state, 0, sizeof(LevelState));
+    state->state->type = LevelType_Play;
+    state->state->play.initialised = 0;
     state->controller = malloc(sizeof(Controller));
+    memset(state->controller, 0, sizeof(Controller));
     state->quit = 0;
 
     state->width = 1920 / 2;

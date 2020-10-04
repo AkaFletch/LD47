@@ -9,8 +9,42 @@ typedef enum LevelType {
     LevelType_Play,
 } LevelType;
 
-typedef struct PlayState {
+typedef struct Comet {
+    int finished;
+    int frame;
+    int seed;
+    vec3 spawnPos;
+    vec3 pos;
+    float radius;
+    float rotation;
+    float spawnAngle;
+} Comet;
 
+typedef struct Box {
+    int alive;
+    vec3 pos;
+    vec2 size;
+    vec3 colour;
+} Box;
+
+typedef struct Player {
+    float angle;
+    int onFloor;
+    float height;
+    float yVelocity;
+} Player;
+
+typedef struct PlayState {
+    int initialised;
+    vec3 cameraPos;
+    vec3 playerSquare[4];
+    float rotationAngle;
+    Player player;
+    Box boxes[20];
+    int boxCount;
+    Comet comets[150];
+    int cometCount;
+    int spawnedNewComet;
 } PlayState;
 
 typedef struct LevelState {
@@ -28,6 +62,8 @@ typedef struct GameButton {
 typedef struct Controller {
     GameButton Exit;
     GameButton Accept;
+    GameButton Left;
+    GameButton Right;
 } Controller;
 
 typedef struct GameState {
@@ -42,7 +78,7 @@ typedef struct GameState {
     int quit;
 } GameState;
 
-void updateGame(GameState *state);
+void updateGame(GameState *state, float delta);
 void render(GameState *state);
 void freeGameState(GameState *state);
 void gameStateInit(GameState *state);

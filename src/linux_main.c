@@ -26,15 +26,17 @@ int sdlRunner()
     SDL_GL_SetSwapInterval(1);
 
     gameStateInit(&state);
+    float currentTime;
+    float delta;
     while(!state.quit) {
-        updateGame(&state);
+        currentTime = SDL_GetTicks();
+        updateGame(&state, delta);
         render(&state);
-
         SDL_GL_SwapWindow(state.window);
+        delta = (SDL_GetTicks() - currentTime)/10;
     }
 
     freeGameState(&state);
-
     SDL_Quit();
     return 0;
 }
