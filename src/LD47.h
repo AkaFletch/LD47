@@ -1,6 +1,7 @@
 #ifndef LD47_H
 #define LD47_H
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_mixer.h"
 
 #include "opengl.h"
 
@@ -9,15 +10,27 @@ typedef enum LevelType {
     LevelType_Play,
 } LevelType;
 
+typedef struct Particle {
+    int alive;
+    float radius;
+    float height;
+    float angle;
+} Particle;
+
 typedef struct Comet {
     int finished;
     int frame;
     int seed;
-    vec3 spawnPos;
-    vec3 pos;
+    float height;
+    float Spawnheight;
     float radius;
     float rotation;
     float spawnAngle;
+    float angle;
+    float speed;
+    float particleTime;
+    int particleCount;
+    Particle particles[230];
 } Comet;
 
 typedef struct Box {
@@ -36,15 +49,18 @@ typedef struct Player {
 
 typedef struct PlayState {
     int initialised;
+    int started;
+    int gameover;
     vec3 cameraPos;
     vec3 playerSquare[4];
     float rotationAngle;
     Player player;
     Box boxes[20];
     int boxCount;
-    Comet comets[150];
+    Comet comets[260];
     int cometCount;
     int spawnedNewComet;
+    float time;
 } PlayState;
 
 typedef struct LevelState {
@@ -64,6 +80,7 @@ typedef struct Controller {
     GameButton Accept;
     GameButton Left;
     GameButton Right;
+    GameButton Reset;
 } Controller;
 
 typedef struct GameState {
@@ -75,6 +92,7 @@ typedef struct GameState {
     SDL_GLContext *glContext;
     Controller *controller;
     LevelState *state;
+    Mix_Music *music;
     int quit;
 } GameState;
 

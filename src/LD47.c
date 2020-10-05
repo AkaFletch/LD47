@@ -16,6 +16,10 @@ void handleKeyboard(Controller *controller, SDL_Event event) {
             controller->Right.pressed = keypressed;
             break;
         }
+        case SDLK_r: {
+            controller->Reset.pressed = keypressed;
+            break;
+        }
     }
 }
 
@@ -50,6 +54,11 @@ void handleInput(GameState *state, Controller  *controller) {
 
 void updateGame(GameState *state, float delta) {
     handleInput(state, state->controller);
+    if( Mix_PlayingMusic() == 0 )
+    {
+        Mix_PlayMusic( state->music, -1 );
+        Mix_VolumeMusic(MIX_MAX_VOLUME/3);
+    }
     if(state->controller->Exit.pressed) {
         state->quit = 1;
     }
@@ -95,6 +104,7 @@ void render(GameState *state) {
 void freeGameState(GameState *state) {
     free(state->controller);
     free(state->state);
+    Mix_FreeMusic(state->music);
     SDL_GL_DeleteContext(state->glContext);
     SDL_DestroyWindow(state->window);
 }
@@ -108,6 +118,7 @@ void gameStateInit(GameState *state) {
     state->controller = malloc(sizeof(Controller));
     memset(state->controller, 0, sizeof(Controller));
     state->quit = 0;
+    state->music = Mix_LoadMUS("data/fastpiano.wav");
 
     state->width = 1920 / 2;
     state->height = 1080 / 2;
