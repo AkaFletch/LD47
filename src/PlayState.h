@@ -3,6 +3,6 @@
 #include "LD47.h"
 
 void RenderPlayState(PlayState *state);
-void UpdatePlayState(PlayState *state, Controller *controller, float delta);
+void UpdatePlayState(PlayState *state, Controller *controller,  float delta);
 
 #endif

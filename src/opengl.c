@@ -70,6 +70,13 @@ void drawTriangle(vec3 v0, vec3 v1, vec3 v2, vec3 c) {
     glEnd();
 }
 
+void drawLine(vec3 first, vec3 second) {
+    glBegin(GL_LINES);
+    glVertex3fv(first.points);
+    glVertex3fv(second.points);
+    glEnd();
+}
+
 void drawRect(vec3 v0, vec3 v1, vec3 v2, vec3 v3, vec3 c) {
     glBegin(GL_TRIANGLES);
     glColor3f(c.points[0], c.points[1], c.points[2]);

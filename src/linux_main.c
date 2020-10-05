@@ -19,13 +19,22 @@ int sdlRunner()
 
     SDL_GLContext context = SDL_GL_CreateContext(state.window);
     if(!context) {
-        printf("Failed to create opengl context");
+        printf("Failed to create opengl context\n");
         return -1;
     }
 
     SDL_GL_SetSwapInterval(1);
 
+    if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
+    {
+        printf("Failed to open mixer audio\n");
+        return -1;    
+    }
     gameStateInit(&state);
+    if(!state.music) {
+        printf("Failed to load music file\n");
+        return -1;
+    }
     float currentTime;
     float delta;
     while(!state.quit) {
